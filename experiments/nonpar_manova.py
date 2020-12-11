@@ -1,9 +1,11 @@
 # %%
 import csv
 
+import numpy as np
 from graspologic.datasets import load_mice
 from graspologic.embed import OmnibusEmbed
 from hyppo.ksample import KSample
+from tqdm import tqdm
 
 # %%
 # Load the full mouse dataset
@@ -29,7 +31,7 @@ def vertex_pval(vertex, embedding, labels):
     samples = [embedding[labels == group, vertex, :] for group in np.unique(labels)]
 
     # Calculate the p-value for the i-th vertex
-    statistic, pvalue, _ = KSample("MGC").test(*samples, reps=100000, workers=-1)
+    statistic, pvalue, _ = KSample("MGC").test(*samples, reps=10000000, workers=-1)
 
     return statistic, pvalue
 
@@ -37,12 +39,11 @@ def vertex_pval(vertex, embedding, labels):
 # %%
 filename = "nonpar_manova.csv"
 columns = ["ROI", "stat", "pval"]
+
 with open(filename, "w") as outfile:
     writer = csv.writer(outfile)
     writer.writerow(columns)
 
-    for vertex in range(n_vertices):
+    for vertex in tqdm(range(n_vertices)):
         statistic, pvalue = vertex_pval(vertex, omni_embedding, mice.labels)
         writer.writerow([vertex, statistic, pvalue])
-
-# %%
