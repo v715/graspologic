@@ -31,10 +31,16 @@ def vertex_pval(vertex, embedding, labels):
     samples = [embedding[labels == group, vertex, :] for group in np.unique(labels)]
 
     # Calculate the p-value for the i-th vertex
-    statistic, pvalue, _ = KSample("MGC").test(*samples, reps=10000000, workers=-1)
+    statistic, pvalue, _ = KSample("MGC").test(*samples, reps=1000000, workers=-1)
 
     return statistic, pvalue
 
+
+# %%
+out = []
+for vertex in tqdm(range(n_vertices)):
+    statistic, pvalue = vertex_pval(vertex, omni_embedding, mice.labels)
+    out.append([vertex, statistic, pvalue])
 
 # %%
 filename = "nonpar_manova.csv"
@@ -43,7 +49,3 @@ columns = ["ROI", "stat", "pval"]
 with open(filename, "w") as outfile:
     writer = csv.writer(outfile)
     writer.writerow(columns)
-
-    for vertex in tqdm(range(n_vertices)):
-        statistic, pvalue = vertex_pval(vertex, omni_embedding, mice.labels)
-        writer.writerow([vertex, statistic, pvalue])
