@@ -31,7 +31,7 @@ def test(samples, labels, binarize, average):
 # %%
 def twin_truncnorm(mu_1, sigma_1, mu_2, sigma_2, n_subjects, n_vertices=10):
 
-    # Setup distributions
+    # Initialize distributions
     upper = 1
     lower = -1
     x1 = truncnorm(
@@ -80,22 +80,19 @@ dist_params = {
 # %%
 binarize = [True, False]
 average = [True, False]
-n_subjects = np.linspace(10, 100, 10)
+n_subjects = np.linspace(5, 50, 10)
 functions = list(dist_params.keys())
 
-parameters = product(binarize, average, n_subjects, functions)
-n_iterations = 5
+n_iterations = range(20)
+parameters = product(binarize, average, n_subjects, functions, n_iterations)
 
 out = []
-for binarize_, average_, n_subjects_, f in tqdm(parameters):
-    for _ in range(n_iterations):
-        sample_size, stat, pvalue = main(
-            binarize_, average_, f, dist_params, n_subjects_
-        )
-        out.append([binarize_, average_, f, sample_size, stat, pvalue])
+for binarize_, average_, n_subjects_, f, _ in tqdm(list(parameters)):
+    sample_size, stat, pvalue = main(binarize_, average_, f, dist_params, n_subjects_)
+    out.append([binarize_, average_, f, sample_size, stat, pvalue])
 
 # %%
-filename = "results/block_simulation.csv"
+filename = "results/block_simulation_3.csv"
 columns = ["binarize", "average", "distribution", "sample_size", "stat", "pvalue"]
 
 with open(filename, "w") as outfile:
