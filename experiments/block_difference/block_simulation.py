@@ -45,8 +45,8 @@ def twin_truncnorm(mu_1, sigma_1, mu_2, sigma_2, n_subjects, n_vertices=10):
     # Sample distributions
     samples = []
     labels = []
-    for label in range(2):
-        for _ in range(int(n_subjects)):
+    for _ in range(int(n_subjects)):
+        for label in range(2):
             labels.append(label)
             if label == 0:
                 samples.append(x1.rvs(n_vertices))
@@ -57,8 +57,23 @@ def twin_truncnorm(mu_1, sigma_1, mu_2, sigma_2, n_subjects, n_vertices=10):
 
 
 # %%
-def main(binarize, average, f, dist_params, n_subjects):
-    samples, labels = twin_truncnorm(n_subjects=n_subjects, **dist_params[f])
+def data_generator(max_n_subjects, dist_params):
+    data = dict()
+    for distribution, parameters in dist_params.items():
+        samples, labels = twin_truncnorm(n_subjects=max_n_subjects, **parameters)
+        data[distribution] = (samples, labels)
+    return data
+
+
+def data_loader(n_subjects, distribution, data):
+    n_subjects = int(n_subjects)
+    samples, labels = data[distribution]
+    return samples[:n_subjects, :], labels[:n_subjects]
+
+
+# %%
+def main(binarize, average, n_subjects, distribution, data):
+    samples, labels = data_loader(n_subjects, distribution, data)
     stat, pvalue = test(samples, labels, binarize, average)
 
     n_groups = len(np.unique(labels))
@@ -75,25 +90,29 @@ def main(binarize, average, f, dist_params, n_subjects):
 dist_params = {
     "equal": dict(mu_1=0, sigma_1=0.25, mu_2=0, sigma_2=0.25),
     "same_mean": dict(mu_1=0, sigma_1=0.25, mu_2=0, sigma_2=0.5),
-    "diff_mean": dict(mu_1=1, sigma_1=0.25, mu_2=0, sigma_2=0.25),
+    "diff_mean": dict(mu_1=0, sigma_1=0.25, mu_2=0.25, sigma_2=0.25),
 }
 
 # %%
 binarize = [True, False]
 average = [True, False]
-n_subjects = np.linspace(5, 50, 10)
-functions = list(dist_params.keys())
+n_subjects = np.linspace(10, 100, 10)
+distributions = list(dist_params.keys())
 
 n_iterations = range(20)
-parameters = product(binarize, average, n_subjects, functions, n_iterations)
+parameters = product(binarize, average, n_subjects, distributions, n_iterations)
+
+data = data_generator(np.max(n_subjects), dist_params)
 
 out = []
-for binarize_, average_, n_subjects_, f, _ in tqdm(list(parameters)):
-    sample_size, stat, pvalue = main(binarize_, average_, f, dist_params, n_subjects_)
-    out.append([binarize_, average_, f, sample_size, stat, pvalue])
+for binarize_, average_, n_subjects_, distribution, _ in tqdm(list(parameters)):
+    sample_size, stat, pvalue = main(
+        binarize_, average_, n_subjects_, distribution, data
+    )
+    out.append([binarize_, average_, distribution, sample_size, stat, pvalue])
 
 # %%
-filename = "results/block_simulation_3.csv"
+filename = "results/block_simulation_4.csv"
 columns = ["binarize", "average", "distribution", "sample_size", "stat", "pvalue"]
 
 with open(filename, "w") as outfile:
