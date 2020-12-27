@@ -4,9 +4,10 @@ from itertools import product
 
 import numpy as np
 from hyppo.ksample import KSample
-from skimage.filters import threshold_otsu
 from scipy.stats import truncnorm
+from skimage.filters import threshold_otsu
 from tqdm import tqdm
+
 
 # %%
 def test(samples, labels, binarize, average):
