@@ -48,7 +48,7 @@ sns.lineplot(
 axs[0].set_box_aspect(1)
 axs[0].set(
     xlabel="Sample Size",
-    ylabel="Recall",
+    ylabel="False Positive Rate",
     title="Same Distribution",
     ylim=(-0.05, 1.05),
 )
@@ -64,7 +64,7 @@ sns.lineplot(
 axs[1].set_box_aspect(1)
 axs[1].set(
     xlabel="Sample Size",
-    ylabel="Power",
+    ylabel="True Positive Rate",
     title="Same Mean",
     ylim=(-0.05, 1.05),
 )
@@ -80,7 +80,7 @@ sns.lineplot(
 axs[2].set_box_aspect(1)
 axs[2].set(
     xlabel="Sample Size",
-    ylabel="Power",
+    ylabel="True Positive Rate",
     title="Different Mean",
     ylim=(-0.05, 1.05),
 )
