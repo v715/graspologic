@@ -35,7 +35,7 @@ sns.lineplot(
 plt.show()
 
 # %%
-fig, axs = plt.subplots(ncols=3, sharex=True, sharey=False, figsize=(8, 5))
+fig, axs = plt.subplots(ncols=3, sharex=True, sharey=False, figsize=(8, 3.5))
 
 sns.lineplot(
     data=df.query("distribution == 'equal'"),
@@ -85,14 +85,14 @@ axs[2].set(
     ylim=(-0.05, 1.05),
 )
 
-fig.tight_layout()
+plt.tight_layout()
 axs[1].legend(
     loc="upper center",
     bbox_to_anchor=(0.5, -0.25),
     fancybox=True,
     shadow=True,
-    ncol=4,
+    ncol=2,
 )
-plt.savefig("community_sim.pdf", dpi=300)
+plt.savefig("community_sim.pdf", bbox_inches="tight")
 
 # %%
