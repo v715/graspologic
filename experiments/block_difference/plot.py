@@ -1,8 +1,8 @@
 # %%
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import seaborn as sns
+
 
 # %%
 def get_method_name(row):
@@ -19,20 +19,11 @@ def get_method_name(row):
 
 
 # %%
-df = pd.read_csv("results/block_simulation_2.csv")
+df = pd.read_csv("block_simulation.csv")
 df["method"] = df.apply(get_method_name, axis="columns")
 df = df.drop(["binarize", "average"], axis="columns")
 df["reject"] = df["pvalue"] < 0.05
 df.head()
-
-# %%
-sns.lineplot(
-    data=df.query("distribution == 'same_mean'"),
-    x="sample_size",
-    y="reject",
-    hue="method",
-)
-plt.show()
 
 # %%
 fig, axs = plt.subplots(ncols=3, sharex=True, sharey=False, figsize=(8, 3.5))
@@ -94,5 +85,3 @@ axs[1].legend(
     ncol=2,
 )
 plt.savefig("community_sim.pdf", bbox_inches="tight")
-
-# %%
