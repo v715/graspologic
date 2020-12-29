@@ -75,7 +75,7 @@ def main(binarize, average, f, dist_params, n_subjects):
 dist_params = {
     "equal": dict(mu_1=0, sigma_1=0.25, mu_2=0, sigma_2=0.25),
     "same_mean": dict(mu_1=0, sigma_1=0.25, mu_2=0, sigma_2=0.5),
-    "diff_mean": dict(mu_1=1, sigma_1=0.25, mu_2=0, sigma_2=0.25),
+    "diff_mean": dict(mu_1=-0.075, sigma_1=0.25, mu_2=0.075, sigma_2=0.25),
 }
 
 # %%
@@ -84,7 +84,7 @@ average = [True, False]
 n_subjects = np.linspace(5, 50, 10)
 functions = list(dist_params.keys())
 
-n_iterations = range(20)
+n_iterations = range(50)
 parameters = product(binarize, average, n_subjects, functions, n_iterations)
 
 out = []
@@ -93,7 +93,7 @@ for binarize_, average_, n_subjects_, f, _ in tqdm(list(parameters)):
     out.append([binarize_, average_, f, sample_size, stat, pvalue])
 
 # %%
-filename = "results/block_simulation_3.csv"
+filename = "block_simulation.csv"
 columns = ["binarize", "average", "distribution", "sample_size", "stat", "pvalue"]
 
 with open(filename, "w") as outfile:
