@@ -19,7 +19,7 @@ def get_method_name(row):
 
 
 # %%
-df = pd.read_csv("block_simulation.csv")
+df = pd.read_csv("results/block_simulation_dcorr.csv")
 df["method"] = df.apply(get_method_name, axis="columns")
 df = df.drop(["binarize", "average"], axis="columns")
 df["reject"] = df["pvalue"] < 0.05

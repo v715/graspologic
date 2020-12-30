@@ -23,7 +23,7 @@ def test(samples, labels, binarize, average):
 
     # Run MGC
     try:
-        stat, pvalue, *_ = KSample("MGC").test(*samples, reps=10000, workers=-1)
+        stat, pvalue, *_ = KSample("Dcorr").test(*samples, reps=10000, workers=-1)
     except ValueError:
         stat, pvalue = np.nan, 1
     return stat, pvalue
@@ -93,7 +93,7 @@ for binarize_, average_, n_subjects_, f, _ in tqdm(list(parameters)):
     out.append([binarize_, average_, f, sample_size, stat, pvalue])
 
 # %%
-filename = "block_simulation.csv"
+filename = "results/block_simulation_dcorr.csv"
 columns = ["binarize", "average", "distribution", "sample_size", "stat", "pvalue"]
 
 with open(filename, "w") as outfile:
